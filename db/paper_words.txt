@@ -1,0 +1,99 @@
+Open network payment system for providing for real-time authorization of payment and purchase transactions
+A caching file system for a programmer's workstation
+Parallel processing system with processor array having SIMD/MIMD instruction processing
+Open network payment system for providing for authentication of payment orders based on a confirmation electronic mail message
+Parallel processing system with processor array and network communications system for transmitting messages of variable length
+Parallel processing system with processor array having memory system included in system memory
+FX-87 reference manual
+Static dependent costs for estimating execution time
+Reasoning about continuations with control effects
+Ocean fertilization
+Parallel processing system with processor array with processing elements ad- dressing associated memories using host supplied address value and base register content
+Digital active advertising
+Type reconstruction with first-class polymorphic values
+DNA Based Computers V: DIMACS Workshop DNA Based Computers V, June 14-15, 1999, Massachusetts Institute of Technology
+Scattering of geodesic fields, II
+Screening for genetic variation
+Design concepts in programming languages
+Replica routing
+Controlled transfer of information in computer networks
+Natural random numbers
+Walter user's manual
+Ã¢Â€ ÂœCryptographic Sealing for Information Secrecy and AuthenticationÃ¢Â€
+The application of digital broadcast communication to large scale information systems
+Transfers of information in a communications network
+Lamins A and C bind and assemble at the surface of mitotic chromosomes.
+Programmed sequential mutagenesis
+Managing transfers of information in a communications network
+Integrin heterodimer and receptor complexity in avian and mammalian cells.
+Overcast: Reliable Multicasting with an Overlay Network
+Programmed Sequential Mutagenesis
+MIT/LCS/TR-8e4 Remote PipÃ© and Procedure Â«for Efficient Distributed Communication
+New York, New York, July 1995
+Table 1 (Supplemental): Summary of expression programs discovered by GeneProgram from Novartis Tissue Atlas v2 data
+Table 2 (Supplemental): Complete data for all 100 expression programs discovered by GeneProgram from the Novartis Gene Atlas v2
+Supporting online material for: Transcriptional Regulatory Networks in Saccharomyces cerevisiae
+Laboratory for Computer Science Massachusetts Institute of Technology
+Managing Transfers of Information in a Communications Network
+Type Reconstruction with First-Class Polymorphic Values
+Digital Active Advertising
+Heinrich Schenker's Approach to Detail
+Elucidating Genetic Regulatory Networks Using Graphical Models and Genomic Expression Data
+FX-87 Reference Manual. Edition 1.0
+Antibodies to the conserved cytoplasmic domain of the integrin beta 1 subunit react with proteins in vertebrates, invertebrates, and fungi.
+A Caching File System for a Programmer\'s Workstation
+Hierarchical Dirichlet Process-Based Models For Discovery of Cross-species Mammalian Gene Expression
+Design concepts in programming languages
+Algebraic Video for Composition and Content-Based Access
+Research Abstracts-2006
+Boston Community Information System User's Manual (Version 8.17)
+Phonetics in phonology: the case of laryngeal specification
+Regulated targeting of protein phosphatase 1 to the outer kinetochore by KNL1 opposes Aurora B kinase
+FX-87 Performance Measurements: Dataflow Implementation
+A novel free-living prochlorophyte abundant in the oceanic euphotic zone
+Multiple evolutionary origins of prochlorophytes within the cyanobacterial radiation
+Verifying and decoding in constant depth
+Robustness of the learning with errors assumption
+New directions in cryptography: twenty some years later (or cryptograpy and complexity theory: a match made in heaven)
+Secure computation from random error correcting codes
+On the implementation of huge random objects
+Lecture notes on cryptography
+The search for provably secure cryptosystems
+Secure multi-party computation without agreement
+Securing computation against continuous leakage
+Fair computation of general functions in presence of immoral majority
+Resettable zero-knowledge
+An efficient probabilistic public-key encryption scheme which hides all partial information
+Multi party computations: past and present
+Almost all primes can be quickly certified
+Complexity of lattice problems: a cryptographic perspective
+New-Age Cryptography
+Better byzantine agreement protocols in the full-information model
+Interactive Proofs and Applications
+Interleaved zero-knowledge
+Simultaneous Hardcore Bits and Cryptography Against Freezing Attacks
+Verifiable Partial Key Escrow
+Public-key cryptosystems from lattice reduction problems
+Incremental cryptography: The case of hashing and signing
+Interactive proofs and the hardness of approximating cliques
+Introduction to Special Section on Probabilistic Proof Systems
+Invariant Signatures and Non-Interactive Zero-Knowledge Proofs are Equiv- alent. CRYPTO
+Veri
+An efficient threshold public key cryptosystem secure against adaptive chosen ciphertext attack
+Verifiable partial key escrow
+On the cryptographic applications of random functions
+Efficient threshold cryptosystems
+Testing Monotonicity
+Eliminating Decryption Errors in the Ajtai-Dwork Cryptosystem
+To appear in Proceedings of the Fourth Annual Conference on Computer and Communications Security, ACM, 1997. Earlier version was Technical Re- port CS95-447, Department of Computer Science and Engineering, University of California at San Diego, October 1995.
+Earlier version appeared as MIT Laboratory for Computer Science Technical Report 688, April
+Appears as MIT Laboratory for Computer Science Technical Report 688, April 1996.
+Rafail Ostrovsky-Publications
+Testing monotonicity
+Everything provable is provable in zero-knowledge
+Property testing and its connection to learning and approximation
+On the limits of non-approximability of lattice problems
+University of Azores, Ponta Delgada, Azores, Portugal June 30â€“July 4, 2010
+Multiparty computation secure against continual memory leakage
+Delegating computation reliably: paradigms and constructions
+

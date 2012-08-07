@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Research</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <p>
+    <%= link_to "Home", root_path %> | 
+    <%= link_to "Departments", departments_path %> | 
+    <%= link_to "Researchers", researchers_path %> | 
+    <%= link_to "Venues", venues_path %> | 
+    <%= link_to "Research Areas", research_areas_path %> | 
+    <%= link_to "Publications", publications_path %> | 
+    <%= link_to "Patents", patents_path %> | 
+    <%= link_to "Grants", grants_path %>
+
+<%= yield %>
+
+</body>
+</html>

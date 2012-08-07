@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Title:</b>
+  <%= @grant.title %>
+</p>
+
+<p>
+  <b>Amount:</b>
+  <%= number_to_currency(@grant.amount) %>
+</p>
+
+<p>
+  <b>Date awarded:</b>
+  <%= @grant.date_awarded %>
+</p>
+
+<p>
+  <b>Research Areas:</b>
+</p>
+<%= form_for @grant, :remote => true, :html => {:id => "research-area-add-form"} do |f| %>
+  <%=f.select(:research_areas, ResearchArea.all.collect {|r| [r.name, r.id] }, { :include_blank => true }) %>
+  <%=f.submit "Add Research Area" %>
+<% end %>
+<p>
+  <ul id="research-areas">
+    <% @grant.research_areas.each do |research_area| %>
+      <li><%=research_area.name %></li>
+    <% end %>
+  </ul>
+</p>
+
+
+<%= link_to 'Edit', edit_grant_path(@grant) %> |
+<%= link_to 'Back', grants_path %>

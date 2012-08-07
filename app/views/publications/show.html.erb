@@ -1,0 +1,46 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @publication.name %>
+</p>
+
+<p>
+  <b>Venue:</b>
+  <%= Venue.find(@publication.venue_id).name %>
+</p>
+
+<p>
+  <b>Researchers:</b>
+</p>
+<%= form_for @publication, :remote => true, :html => {:id => "researcher-add-form"} do |f| %>
+  <%=f.select(:researchers, Researcher.all.collect {|r| [r.name, r.id] }, { :include_blank => true }) %>
+  <%=f.submit "Add Researcher" %>
+<% end %>
+<p>
+  <ul id="researchers">
+    <% @publication.researchers.each do |researcher| %>
+      <li><%=researcher.name %></li>
+    <% end %>
+  </ul>
+</p>
+
+<p>
+  <b>Research Areas:</b>
+</p>
+<%= form_for @publication, :remote => true, :html => {:id => "research-area-add-form"} do |f| %>
+  <%=f.select(:research_areas, ResearchArea.all.collect {|r| [r.name, r.id] }, { :include_blank => true }) %>
+  <%=f.submit "Add Research Area" %>
+<% end %>
+<p>
+  <ul id="research-areas">
+    <% @publication.research_areas.each do |research_area| %>
+      <li><%=research_area.name %></li>
+    <% end %>
+  </ul>
+</p>
+
+
+
+<%= link_to 'Edit', edit_publication_path(@publication) %> |
+<%= link_to 'Back', publications_path %>

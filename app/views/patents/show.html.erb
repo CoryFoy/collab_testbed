@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Title:</b>
+  <%= @patent.title %>
+</p>
+
+<p>
+  <b>Research Areas:</b>
+</p>
+<%= form_for @patent, :remote => true, :html => {:id => "research-area-add-form"} do |f| %>
+  <%=f.select(:research_areas, ResearchArea.all.collect {|r| [r.name, r.id] }, { :include_blank => true }) %>
+  <%=f.submit "Add Research Area" %>
+<% end %>
+<p>
+  <ul id="research-areas">
+    <% @patent.research_areas.each do |research_area| %>
+      <li><%=research_area.name %></li>
+    <% end %>
+  </ul>
+</p>
+
+
+<%= link_to 'Edit', edit_patent_path(@patent) %> |
+<%= link_to 'Back', patents_path %>
