@@ -74,7 +74,7 @@
 <%= form_tag "/concepts/one", :method => "get" do |f| %>
 <div class="header">
   <span>
-    <%= text_field_tag :query, @query %>
+    Search Publications: <%= text_field_tag :query, @query %>
     <%= submit_tag "search" %>
   </span>
   <span class="search-ra">
@@ -83,22 +83,22 @@
 </div>
 <% end %>
 
-<h1><%= @research_area.try(:name) %></h1>
-
-<div class="data-container two-col">
-  <h3>Publications (<%= @publications.length %>)</h3>
-  <div class="data-rows">
-    <% @publications.each do |publication| %>
-      <div class="data-row"><%= publication.name %></div>
-    <% end %>
-  </div>
-</div>
+<h1><%= @selected_name %></h1>
 
 <div class="data-container two-col">
   <h3>Related Research Areas (<%= @research_areas.length %>)</h3>
   <div class="data-rows">
     <% @research_areas.each do |research_area| %>
       <div class="data-row"><%= research_area.name %></div>
+    <% end %>
+  </div>
+</div>
+
+<div class="data-container two-col">
+  <h3>Related Publications (<%= @publications.length %>)</h3>
+  <div class="data-rows">
+    <% @publications.each do |publication| %>
+      <div class="data-row"><%= publication.name %></div>
     <% end %>
   </div>
 </div>
