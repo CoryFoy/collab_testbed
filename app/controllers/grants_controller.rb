@@ -59,7 +59,7 @@ class GrantsController < ApplicationController
     @grant = Grant.find(params[:id])
 
     respond_to do |format|
-      if params[:patent][:research_areas]
+      if params[:grant][:research_areas]
         research_area = ResearchArea.find(params[:grant][:research_areas].to_i)
         @grant.research_areas << research_area
         @grant.save

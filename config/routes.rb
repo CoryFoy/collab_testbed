@@ -13,6 +13,10 @@ Research::Application.routes.draw do
 
   resources :departments
 
+  # concepts
+  match 'concepts' => "concepts#index"
+  match "concepts/:action", :controller => 'concepts', :action => /[a-z]+/i
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

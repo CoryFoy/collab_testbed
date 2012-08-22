@@ -1,0 +1,150 @@
+<style tyle="text/css">
+  DIV
+  {
+    vertical-align: top;
+  }
+
+  .header
+  {
+    position: relative;
+    display: block;
+    padding: 10px;
+  }
+
+    .header .search-ra
+    {
+      margin-left: 100px;
+    }
+
+  .data-container
+  {
+    position: relative;
+    display: inline-block;
+    margin: 0 0 1em;
+    padding: 0;
+    width: 30%;
+    background: #EEEEEE;
+    border: 1px solid #CCCCCC;
+  }
+
+    .data-container.two-col
+    {
+      width: 45%
+    }
+
+  .data-container H3
+  {
+    position: relative;
+    display: block;
+    margin: 0;
+    padding: 6px 4px;
+    color: #EEEEEE;
+    background: #4A4A4A;
+    border-width: 1px 1px 0;
+    border-style: solid;
+    border-color: #FFFFFF;
+  }
+
+  .data-container .data-rows
+  {
+    position: relative;
+    display: block;
+    height: 150px;
+    overflow-y: scroll;
+    border-width: 0 1px 1px;
+    border-style: solid;
+    border-color: #FFFFFF;
+  }
+
+  .data-container .data-rows .data-row
+  {
+    position: relative;
+    display: block;
+    overflow-x: hidden;
+    white-space: nowrap;
+    padding: 6px 4px;
+  }
+
+  .data-container .data-rows .data-row:nth-child(even)
+  {
+    background: #DDDDDD;
+  }
+</style>
+
+<%= form_tag "/concepts/one", :method => "get" do |f| %>
+<div class="header">
+  <span>
+    <%= text_field_tag :query, @query %>
+    <%= submit_tag "search" %>
+  </span>
+  <span class="search-ra">
+    Select Research Area: <%= select_tag :research_area_id, options_for_select(@research_areas_options.collect { |ra| [ ra.name, ra.id ] }), { :include_blank => "Select Research Area", :onChange => 'this.form.submit();' } %>
+  </span>
+</div>
+<% end %>
+
+<h1><%= @research_area.try(:name) %></h1>
+
+<div class="data-container two-col">
+  <h3>Publications (<%= @publications.length %>)</h3>
+  <div class="data-rows">
+    <% @publications.each do |publication| %>
+      <div class="data-row"><%= publication.name %></div>
+    <% end %>
+  </div>
+</div>
+
+<div class="data-container two-col">
+  <h3>Related Research Areas (<%= @research_areas.length %>)</h3>
+  <div class="data-rows">
+    <% @research_areas.each do |research_area| %>
+      <div class="data-row"><%= research_area.name %></div>
+    <% end %>
+  </div>
+</div>
+
+<div class="data-container two-col">
+  <h3>Researchers (<%= @researchers.length %>)</h3>
+  <div class="data-rows">
+    <% @researchers.each do |researcher| %>
+      <div class="data-row"><%= researcher.name %></div>
+    <% end %>
+  </div>
+</div>
+
+<div class="data-container two-col">
+  <h3>Departments (<%= @departments.length %>)</h3>
+  <div class="data-rows">
+    <% @departments.each do |department| %>
+      <div class="data-row"><%= department.name %></div>
+    <% end %>
+  </div>
+</div>
+
+<div class="data-container">
+  <h3>Venues (<%= @venues.length %>)</h3>
+  <div class="data-rows">
+    <% @venues.each do |venue| %>
+      <div class="data-row"><%= venue.name %></div>
+    <% end %>
+  </div>
+</div>
+
+<div class="data-container">
+  <h3>Grants (<%= @grants.length %>)</h3>
+  <div class="data-rows">
+    <% @grants.each do |grant| %>
+      <div class="data-row"><%= grant.title %></div>
+    <% end %>
+  </div>
+</div>
+
+<div class="data-container">
+  <h3>Patents (<%= @patents.length %>)</h3>
+  <div class="data-rows">
+    <% @patents.each do |patent| %>
+      <div class="data-row"><%= patent.title %></div>
+    <% end %>
+  </div>
+</div>
+
