@@ -105,10 +105,10 @@
   <h3>Research Areas (<%= @selected_research_areas.length %>)</h3>
   <div class="data-rows">
     <% @selected_research_areas.each do |research_area| %>
-      <div class="data-row"><%= research_area.name %></div>
+      <div class="data-row" model_id="<%= research_area.id %>"><%= research_area.name %></div>
     <% end %>
     <% @research_areas.each do |research_area| %>
-      <div class="data-row inactive"><%= research_area.name %></div>
+      <div class="data-row inactive" model_id="<%= research_area.id %>"><%= research_area.name %></div>
     <% end %>
   </div>
 </div>
@@ -117,10 +117,10 @@
   <h3>Publications (<%= @selected_publications.length %>)</h3>
   <div class="data-rows">
     <% @selected_publications.each do |publication| %>
-      <div class="data-row"><%= publication.name %></div>
+      <div class="data-row" model_id="<%= publication.id %>"><%= publication.name %></div>
     <% end %>
     <% @publications.each do |publication| %>
-      <div class="data-row inactive"><%= publication.name %></div>
+      <div class="data-row inactive" model_id="<%= publication.id %>"><%= publication.name %></div>
     <% end %>
   </div>
 </div>
@@ -129,10 +129,10 @@
   <h3>Researchers (<%= @selected_researchers.length %>)</h3>
   <div class="data-rows">
     <% @selected_researchers.each do |researcher| %>
-      <div class="data-row"><%= researcher.name %></div>
+      <div class="data-row" model_id="<%= researcher.id %>"><%= researcher.name %></div>
     <% end %>
     <% @researchers.each do |researcher| %>
-      <div class="data-row inactive"><%= researcher.name %></div>
+      <div class="data-row inactive" model_id="<%= researcher.id %>"><%= researcher.name %></div>
     <% end %>
   </div>
 </div>
@@ -141,10 +141,10 @@
   <h3>Departments (<%= @selected_departments.length %>)</h3>
   <div class="data-rows">
     <% @selected_departments.each do |department| %>
-      <div class="data-row"><%= department.name %></div>
+      <div class="data-row" model_id="<%= department.id %>"><%= department.name %></div>
     <% end %>
     <% @departments.each do |department| %>
-      <div class="data-row inactive"><%= department.name %></div>
+      <div class="data-row inactive" model_id="<%= department.id %>"><%= department.name %></div>
     <% end %>
   </div>
 </div>
@@ -153,10 +153,10 @@
   <h3>Venues (<%= @selected_venues.length %>)</h3>
   <div class="data-rows">
     <% @selected_venues.each do |venue| %>
-      <div class="data-row"><%= venue.name %></div>
+      <div class="data-row" model_id="<%= venue.id %>"><%= venue.name %></div>
     <% end %>
     <% @venues.each do |venue| %>
-      <div class="data-row inactive"><%= venue.name %></div>
+      <div class="data-row inactive" model_id="<%= venue.id %>"><%= venue.name %></div>
     <% end %>
   </div>
 </div>
@@ -165,10 +165,10 @@
   <h3>Grants (<%= @selected_grants.length %>)</h3>
   <div class="data-rows">
     <% @selected_grants.each do |grant| %>
-      <div class="data-row"><%= grant.title %></div>
+      <div class="data-row" model_id="<%= grant.id %>"><%= grant.title %></div>
     <% end %>
     <% @grants.each do |grant| %>
-      <div class="data-row inactive"><%= grant.title %></div>
+      <div class="data-row inactive" model_id="<%= grant.id %>"><%= grant.title %></div>
     <% end %>
   </div>
 </div>
@@ -197,8 +197,50 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
-    var patents_container = $(".data-container.patents");
-    $(".data-row", patents_container).click(function() {
+    // Research Areas
+    $(".data-row", $(".data-container.research_areas")).click(function() {
+      var id = $(this).attr("model_id");
+      $("INPUT[name='research_area_id']").val(id);
+      $("#form_two").submit();
+    });
+
+    // Publications
+    $(".data-row", $(".data-container.publications")).click(function() {
+      var id = $(this).attr("model_id");
+      $("INPUT[name='publication_id']").val(id);
+      $("#form_two").submit();
+    });
+
+    // Researchers
+    $(".data-row", $(".data-container.researchers")).click(function() {
+      var id = $(this).attr("model_id");
+      $("INPUT[name='researcher_id']").val(id);
+      $("#form_two").submit();
+    });
+
+    // Departments
+    $(".data-row", $(".data-container.departments")).click(function() {
+      var id = $(this).attr("model_id");
+      $("INPUT[name='department_id']").val(id);
+      $("#form_two").submit();
+    });
+
+    // Venues
+    $(".data-row", $(".data-container.venues")).click(function() {
+      var id = $(this).attr("model_id");
+      $("INPUT[name='venue_id']").val(id);
+      $("#form_two").submit();
+    });
+
+    // Grants
+    $(".data-row", $(".data-container.grants")).click(function() {
+      var id = $(this).attr("model_id");
+      $("INPUT[name='grant_id']").val(id);
+      $("#form_two").submit();
+    });
+
+    // Patents
+    $(".data-row", $(".data-container.patents")).click(function() {
       var id = $(this).attr("model_id");
       $("INPUT[name='patent_id']").val(id);
       $("#form_two").submit();
