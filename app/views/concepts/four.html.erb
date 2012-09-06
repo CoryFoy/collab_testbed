@@ -1,0 +1,366 @@
+<style tyle="text/css">
+  DIV
+  {
+    vertical-align: top;
+  }
+
+  CANVAS
+  {
+    width: 100%;
+    height: 100%;
+    background: #EEEEEE;
+    border: 1px solid #FFFFFF;
+  }
+
+  #research-areas
+  {
+    position: relative;
+    display: block;
+    width: 1200px;
+    height: 500px;
+    left: 50%;
+    margin-left: -600px;
+    overflow: hidden;
+    border: 1px solid orange;
+  }
+
+  .canvas-container
+  {
+    position: absolute;
+    display: block;
+    display: none;
+    width: 600px;
+    height: 450px;
+    left: 1300px;
+    perspective: 1000;
+    perspective-origin: 50% 50%;
+    -webkit-perspective: 1000;
+    -webkit-perspective-origin: 50% 50%;
+    -moz-perspective: 1000;
+    -moz-perspective-origin: 50% 50%;
+  }
+  .canvas-container.current
+  {
+    box-shadow: 1px 1px 15px #333333;
+  }
+
+  #research-details
+  {
+    position: relative;
+    display: block;
+    width: 1170px;
+    left: 50%;
+    margin-left: -600px;
+    padding: 0 15px 15px;
+    background: #EEEEEE;
+    border: 1px solid #CCCCCC;
+  }
+
+  #research-details H3
+  {
+    padding-left: 6px;
+  }
+
+  #research-details .set
+  {
+    position: relative;
+    display: inline-block;
+    width: 30%;
+    margin: 0 20px 20px 0;
+    border: 1px solid #CCCCCC;
+  }
+
+  #research-details .container
+  {
+    position: relative;
+    display: block;
+    height: 200px;
+    overflow-y: scroll;
+    border: 1px dashed #CCCCCC;
+  }
+  #research-details .container .row
+  {
+    position: relative;
+    display: block;
+    padding: 10px;
+  }
+  #research-details .container .row:nth-child(odd)
+  {
+    background: #DDDDDD;
+  }
+</style>
+
+<div id="research-areas"></div>
+
+<div style="text-align: center; margin: 1em;">
+  <a href="#" class="left">Back</a>
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  <a href="#" class="right">Forward</a>
+</div>
+
+<div id="research-details">
+  <%
+    @nodes.each_with_index do |node, i|
+      ra = node.research_area
+  %>
+  <div id="detail-ra<%= i + 1 %>">
+    <h2><%= ra.name %></h2>
+
+    <div class="set">
+      <h3>Publications</h3>
+      <div class="container">
+        <% ra.publications.group(:id).each do |model| %>
+          <div class="row"><%= model.name %></div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="set">
+      <h3>Grants</h3>
+      <div class="container">
+        <% ra.grants.group(:id).each do |model| %>
+          <div class="row"><%= model.title %></div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="set">
+      <h3>Patents</h3>
+      <div class="container">
+        <% ra.patents.group(:id).each do |model| %>
+          <div class="row"><%= model.title %></div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="set">
+      <h3>Researchers</h3>
+      <div class="container">
+        <% ra.researchers.group(:id).each do |model| %>
+          <div class="row"><%= model.name %></div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="set">
+      <h3>Venues</h3>
+      <div class="container">
+        <% ra.venues.group(:id).each do |model| %>
+          <div class="row"><%= model.name %></div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="set">
+      <h3>Departments</h3>
+      <div class="container">
+        <% ra.departments.group(:id).each do |model| %>
+          <div class="row"><%= model.name %></div>
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+  var animate = (function () {
+
+    function performLeftOffscreen(element) {
+      moveMe(element, 1, -600, -135, 400, 300, 350, 60);
+    }
+
+    function performLeft(element) {
+      moveMe(element, 2, -25, -135, 400, 300, 350, 60);
+    }
+
+    function performCenter(element) {
+      moveMe(element, 3, 300, -225, 600, 450, 0, 0);
+      element.addClass("current");
+    }
+
+    function performRight(element) {
+      moveMe(element, 2, 800, -135, 400, 300, 350, 300);
+    }
+
+    function performRightOffscreen(element) {
+      moveMe(element, 1, 1800, -135, 400, 300, 350, 300);
+    }
+
+    function moveMe(element, zIndex, left, marginTop, width, height, xRotate, yRotate) {
+      element.show();
+      element.removeClass("current");
+      element.css("z-index", zIndex);
+      element.animate({
+        left: left + "px",
+        top: "50%",
+        margin: marginTop + "px 0px 0px 0px",
+        width: width + "px",
+        height: height + "px"
+      },
+      1000,
+      function() {
+        // Animation complete.
+      });
+    }
+
+    return {
+      leftOffscreen: function(element) { performLeftOffscreen(element); },
+      left: function(element) { performLeft(element); },
+      center: function(element) { performCenter(element); },
+      right: function(element) { performRight(element); },
+      rightOffscreen: function(element) { performRightOffscreen(element); }
+    }
+  }());
+</script>
+
+<script type="text/javascript">
+  var maxCircleSize = 125;
+  var maxChildCircleSize = 80;
+  var minChildCircleSize = 8;
+  var grey = "#7a8491";
+  var green = "#66883f";
+  var yellow = "#eedb74";
+  var brown = "#6c4b1a";
+  var orange = "#c57200";
+  var red = "#6c3108";
+  var purple = "#b380ba";
+
+  var nodes = [
+    <% @nodes.each do |node| %>
+    {
+      title: "<%= node.title %>",
+      data: [
+        { relatedCount: <%= node.publications_related_count %>  , maxCount: <%= node.publications_max_count %>  },
+        { relatedCount: <%= node.researchers_related_count %>   , maxCount: <%= node.researchers_max_count %>   },
+        { relatedCount: <%= node.venues_related_count %>        , maxCount: <%= node.venues_max_count %>        },
+        { relatedCount: <%= node.departments_related_count %>   , maxCount: <%= node.departments_max_count %>   },
+        { relatedCount: <%= node.grants_related_count %>        , maxCount: <%= node.grants_max_count %>        },
+        { relatedCount: <%= node.patents_related_count %>       , maxCount: <%= node.patents_max_count %>       }
+      ]
+    },
+    <% end %>
+  ];
+  var nodeCount = <%= @nodes.length %>;
+  var currentNode = 1;
+
+  $(document).ready(function() {
+    for(var i = 0; i < nodes.length; i++) {
+      var canvasId = "canvas-ra" + (i + 1)
+      var detailId = "detail-ra" + (i + 1)
+      $("#research-areas").append($("<div id='" + canvasId + "-container' class='canvas-container' detailId='" + detailId + "'><canvas id='" + canvasId + "' width='800' height='600'></canvas></div>"));
+      drawNode(400, 300, nodes[i], document.getElementById(canvasId));
+    }
+
+    animate.center($("#canvas-ra1-container"));
+    animate.right($("#canvas-ra2-container"));
+    showDetails("detail-ra1");
+
+    $(".left").click(function() { moveLeft(); return false; });
+    $(".right").click(function() { moveRight(); return false; });
+  });
+
+  function moveLeft() {
+    if(currentNode <= 1) {
+      currentNode = 1;
+      return;
+    }
+    currentNode -= 1;
+
+    animate.leftOffscreen($("#canvas-ra" + (currentNode - 2) + "-container"));
+    animate.left($("#canvas-ra" + (currentNode - 1) + "-container"));
+    animate.center($("#canvas-ra" + currentNode + "-container"));
+    animate.right($("#canvas-ra" + (currentNode + 1) + "-container"));
+    animate.rightOffscreen($("#canvas-ra" + (currentNode + 2) + "-container"));
+
+    showDetails("detail-ra" + currentNode);
+  }
+
+  function moveRight() {
+    if(currentNode >= nodeCount) {
+      currentNode = nodeCount;
+      return;
+    }
+    currentNode += 1;
+    animate.leftOffscreen($("#canvas-ra" + (currentNode - 2) + "-container"));
+    animate.left($("#canvas-ra" + (currentNode - 1) + "-container"));
+    animate.center($("#canvas-ra" + currentNode + "-container"));
+    animate.right($("#canvas-ra" + (currentNode + 1) + "-container"));
+    animate.rightOffscreen($("#canvas-ra" + (currentNode + 2) + "-container"));
+
+    showDetails("detail-ra" + currentNode);
+  }
+
+  function showDetails(detailId) {
+    $("#research-details > DIV").hide();
+    $("#" + detailId).show();
+  }
+
+  function drawNode(x, y, node, canvas) {
+    var nodeData = node.data;
+
+    drawLine(x, y, x - 145, y - 165, canvas);
+    drawLine(x, y, x + 75 , y - 205, canvas);
+    drawLine(x, y, x + 215, y - 40 , canvas);
+    drawLine(x, y, x + 145, y + 165, canvas);
+    drawLine(x, y, x - 75 , y + 205, canvas);
+    drawLine(x, y, x - 215, y + 40 , canvas);
+
+    drawCircle(maxCircleSize, x, y, grey, canvas);
+    drawChildCircle(nodeData[0], x - 145, y - 165, green, canvas);
+    drawChildCircle(nodeData[1], x + 75, y - 205, yellow, canvas);
+    drawChildCircle(nodeData[2], x + 215, y - 40, brown, canvas);
+    drawChildCircle(nodeData[3], x + 145, y + 165, orange, canvas);
+    drawChildCircle(nodeData[4], x - 75, y + 205, red, canvas);
+    drawChildCircle(nodeData[5], x - 215, y + 40, purple, canvas);
+
+    drawLabel(node.title, x, y + 10, canvas);
+  }
+
+  function drawChildCircle(node, x, y, color, canvas) {
+    var shapeSize = node.relatedCount / node.maxCount * maxChildCircleSize
+    if(shapeSize < minChildCircleSize) { shapeSize = minChildCircleSize; }
+    drawCircle(shapeSize, x, y, color, canvas);
+    drawLabel(node.relatedCount, x, y + 10, canvas);
+  }
+
+  function drawCircle(size, x, y, color, canvas) {
+    var context = canvas.getContext("2d");
+    var centerX = x;
+    var centerY = y;
+    var radius = size;
+
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = color;
+    context.fill();
+    context.lineWidth = 1;
+    context.strokeStyle = "RGBA(0, 0, 0, 0.25)";
+    context.stroke();
+  }
+
+  function drawLine(x1, y1, x2, y2, canvas)
+  {
+    var context = canvas.getContext("2d");
+    context.fillStyle = '#000';
+    context.strokeStyle = '#000';
+    context.beginPath();
+    context.moveTo(x1, y1);
+    context.lineTo(x2, y2);
+    context.lineWidth = 1;
+    context.stroke();
+    context.closePath();
+  }
+
+  function drawLabel(text, x, y, canvas) {
+    var context = canvas.getContext("2d");
+    context.textAlign = 'center';
+    context.font = "20pt Arial";
+    context.fillStyle = "#000000";
+    context.fillText(text, x, y);
+  }
+</script>

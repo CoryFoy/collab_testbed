@@ -38,6 +38,29 @@ class ConceptsController < ApplicationController
     get_selected_from_grant(grant_id) unless grant_id.blank?
   end
 
+  def three
+    @research_areas_options = ResearchArea.all
+    @related_nodes = []
+    ra_id = params[:research_area_id]
+    return if ra_id.blank?
+
+    research_area = ResearchArea.find_by_id ra_id
+    @selected_node = build_node_for research_area
+
+    related_ras = research_area.research_areas.group(:id)
+    related_ras.each do |ra|
+      @related_nodes.push(build_node_for(ra)) unless ra.id == ra_id.to_i
+    end
+  end
+
+  def four
+    @research_areas_options = ResearchArea.all
+    @nodes = []
+    ResearchArea.all.each do |ra|
+      @nodes.push(build_node_for(ra))
+    end
+  end
+
   private
 
   def build_base_data_for_one
@@ -269,4 +292,48 @@ class ConceptsController < ApplicationController
     @selected_departments = model.departments.group(:id)
     @departments = @departments - @selected_departments
   end
+
+  def build_node_for(research_area)
+    Node.create_from(research_area)
+  end
+
 end
+
+class Node
+  attr_accessor :research_area
+  attr_accessor :id, :title
+  attr_accessor :publications_related_count, :publications_max_count
+  attr_accessor :researchers_related_count, :researchers_max_count
+  attr_accessor :venues_related_count, :venues_max_count
+  attr_accessor :departments_related_count, :departments_max_count
+  attr_accessor :grants_related_count, :grants_max_count
+  attr_accessor :patents_related_count, :patents_max_count
+
+  def self.create_from(research_area)
+    node = Node.new
+    node.research_area = research_area
+    node.id = research_area.id
+    node.title = research_area.name
+
+    node.publications_related_count = research_area.publications.group(:id).length
+    node.publications_max_count = Publication.all.length
+
+    node.researchers_related_count = research_area.researchers.group(:id).length
+    node.researchers_max_count = Researcher.all.length
+
+    node.venues_related_count = research_area.venues.group(:id).length
+    node.venues_max_count = Venue.all.length
+
+    node.departments_related_count = research_area.departments.group(:id).length
+    node.departments_max_count = Department.all.length
+
+    node.grants_related_count = research_area.grants.group(:id).length
+    node.grants_max_count = Grant.all.length
+
+    node.patents_related_count = research_area.patents.group(:id).length
+    node.patents_max_count = Patent.all.length
+
+    node
+  end
+end
+

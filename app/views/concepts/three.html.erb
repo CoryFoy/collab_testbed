@@ -1,0 +1,178 @@
+<style tyle="text/css">
+  DIV
+  {
+    vertical-align: top;
+  }
+
+  .header
+  {
+    position: relative;
+    display: block;
+    padding: 10px;
+  }
+
+    .header .search-ra
+    {
+      margin-left: 100px;
+    }
+
+  #main-ra
+  {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    left: 50%;
+    margin-left: -400px;
+    background: #EEEEEE;
+  }
+
+  #related-ra
+  {
+    position: relative;
+    width: 600px;
+    left: 50%;
+    margin-left: -300px;
+    background: #EEEEEE;
+  }
+
+  CANVAS
+  {
+    border: 1px solid orange;
+  }
+
+  #related-ra CANVAS
+  {
+    width: 600px;
+    height: 450px;
+  }
+</style>
+
+<%= form_tag "/concepts/three", :method => "get" do |f| %>
+<div class="header">
+  <span class="search-ra">
+    Select Research Area: <%= select_tag :research_area_id, options_for_select(@research_areas_options.collect { |ra| [ ra.name, ra.id ] }), { :include_blank => "Select Research Area", :onChange => 'this.form.submit();' } %>
+  </span>
+</div>
+<% end %>
+
+<div id="main-ra">
+  <canvas id="playground" width="800" height="600"></canvas>
+</div>
+<div id="related-ra"></div>
+
+<script type="text/javascript">
+  var maxCircleSize = 125;
+  var maxChildCircleSize = 80;
+  var minChildCircleSize = 8;
+  var grey = "#7a8491";
+  var green = "#66883f";
+  var yellow = "#eedb74";
+  var brown = "#6c4b1a";
+  var orange = "#c57200";
+  var red = "#6c3108";
+  var purple = "#b380ba";
+
+  var data = {
+    selectedNode: {
+      title: "<%= @selected_node.try(:title) %>",
+      data: [
+        { relatedCount: <%= @selected_node.try(:publications_related_count) %>  , maxCount: <%= @selected_node.try(:publications_max_count) %>  },
+        { relatedCount: <%= @selected_node.try(:researchers_related_count) %>   , maxCount: <%= @selected_node.try(:researchers_max_count) %>   },
+        { relatedCount: <%= @selected_node.try(:venues_related_count) %>        , maxCount: <%= @selected_node.try(:venues_max_count) %>        },
+        { relatedCount: <%= @selected_node.try(:departments_related_count) %>   , maxCount: <%= @selected_node.try(:departments_max_count) %>   },
+        { relatedCount: <%= @selected_node.try(:grants_related_count) %>        , maxCount: <%= @selected_node.try(:grants_max_count) %>        },
+        { relatedCount: <%= @selected_node.try(:patents_related_count) %>       , maxCount: <%= @selected_node.try(:patents_max_count) %>       }
+      ]
+    },
+    relatedNodes: [
+      <% @related_nodes.each do |node| %>
+      {
+        title: "<%= node.title %>",
+        data: [
+          { relatedCount: <%= node.publications_related_count %>  , maxCount: <%= node.publications_max_count %>  },
+          { relatedCount: <%= node.researchers_related_count %>   , maxCount: <%= node.researchers_max_count %>   },
+          { relatedCount: <%= node.venues_related_count %>        , maxCount: <%= node.venues_max_count %>        },
+          { relatedCount: <%= node.departments_related_count %>   , maxCount: <%= node.departments_max_count %>   },
+          { relatedCount: <%= node.grants_related_count %>        , maxCount: <%= node.grants_max_count %>        },
+          { relatedCount: <%= node.patents_related_count %>       , maxCount: <%= node.patents_max_count %>       }
+        ]
+      },
+      <% end %>
+    ]
+  };
+
+  $(document).ready(function() {
+    var canvas = document.getElementById("playground");
+    drawNode(400, 300, data.selectedNode, canvas);
+
+    for(var i = 0; i < data.relatedNodes.length; i++) {
+      var canvasId = "canvas-ra" + (i + 1)
+      $("#related-ra").append($("<canvas id='" + canvasId + "' width='800' height='600'></canvas>"));
+      drawNode(400, 300, data.relatedNodes[i], document.getElementById(canvasId));
+    }
+  });
+
+  function drawNode(x, y, node, canvas) {
+    var nodeData = node.data;
+
+    drawLine(x, y, x - 145, y - 165, canvas);
+    drawLine(x, y, x + 75 , y - 205, canvas);
+    drawLine(x, y, x + 215, y - 40 , canvas);
+    drawLine(x, y, x + 145, y + 165, canvas);
+    drawLine(x, y, x - 75 , y + 205, canvas);
+    drawLine(x, y, x - 215, y + 40 , canvas);
+
+    drawCircle(maxCircleSize, x, y, grey, canvas);
+    drawChildCircle(nodeData[0], x - 145, y - 165, green, canvas);
+    drawChildCircle(nodeData[1], x + 75, y - 205, yellow, canvas);
+    drawChildCircle(nodeData[2], x + 215, y - 40, brown, canvas);
+    drawChildCircle(nodeData[3], x + 145, y + 165, orange, canvas);
+    drawChildCircle(nodeData[4], x - 75, y + 205, red, canvas);
+    drawChildCircle(nodeData[5], x - 215, y + 40, purple, canvas);
+
+    drawLabel(node.title, x, y + 10, canvas);
+  }
+
+  function drawChildCircle(node, x, y, color, canvas) {
+    var shapeSize = node.relatedCount / node.maxCount * maxChildCircleSize
+    if(shapeSize < minChildCircleSize) { shapeSize = minChildCircleSize; }
+    drawCircle(shapeSize, x, y, color, canvas);
+    drawLabel(node.relatedCount, x, y + 10, canvas);
+  }
+
+  function drawCircle(size, x, y, color, canvas) {
+    var context = canvas.getContext("2d");
+    var centerX = x;
+    var centerY = y;
+    var radius = size;
+
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = color;
+    context.fill();
+    context.lineWidth = 1;
+    context.strokeStyle = "RGBA(0, 0, 0, 0.25)";
+    context.stroke();
+  }
+
+  function drawLine(x1, y1, x2, y2, canvas)
+  {
+    var context = canvas.getContext("2d");
+    context.fillStyle = '#000';
+    context.strokeStyle = '#000';
+    context.beginPath();
+    context.moveTo(x1, y1);
+    context.lineTo(x2, y2);
+    context.lineWidth = 1;
+    context.stroke();
+    context.closePath();
+  }
+
+  function drawLabel(text, x, y, canvas) {
+    var context = canvas.getContext("2d");
+    context.textAlign = 'center';
+    context.font = "20pt Arial";
+    context.fillStyle = "#000000";
+    context.fillText(text, x, y);
+  }
+</script>
