@@ -38,9 +38,14 @@
     -webkit-perspective-origin: 50% 50%;
     -moz-perspective: 1000;
     -moz-perspective-origin: 50% 50%;
+
+    opacity: 0.7;
+    border: 2px solid #FFFFFF;
+    box-shadow: 1px 1px 15px #999999;
   }
   .canvas-container.current
   {
+    opacity: 1.0;
     box-shadow: 1px 1px 15px #333333;
   }
 
@@ -92,14 +97,17 @@
 
 <div id="research-areas"></div>
 
+<%= form_tag "/concepts/three", :method => "get" do |f| %>
 <div style="text-align: center; margin: 1em;">
   <a href="#" class="left">Back</a>
   &nbsp;
-  &nbsp;
-  &nbsp;
+  <span class="search-ra">
+    <%= select_tag :research_area_id, options_for_select(@research_areas_options.collect { |ra| [ ra.name, ra.id ] }), { :include_blank => "", :onChange => 'move(this.selectedIndex)' } %>
+  </span>
   &nbsp;
   <a href="#" class="right">Forward</a>
 </div>
+<% end %>
 
 <div id="research-details">
   <%
@@ -174,17 +182,25 @@
       moveMe(element, 1, -600, -135, 400, 300, 350, 60);
     }
 
+    function performLeftFar(element) {
+      moveMe(element, 2, -110, -135, 400, 300, 350, 60);
+    }
+
     function performLeft(element) {
-      moveMe(element, 2, -25, -135, 400, 300, 350, 60);
+      moveMe(element, 3, 0, -135, 400, 300, 350, 60);
     }
 
     function performCenter(element) {
-      moveMe(element, 3, 300, -225, 600, 450, 0, 0);
+      moveMe(element, 4, 300, -225, 600, 450, 0, 0);
       element.addClass("current");
     }
 
     function performRight(element) {
-      moveMe(element, 2, 800, -135, 400, 300, 350, 300);
+      moveMe(element, 3, 800, -135, 400, 300, 350, 300);
+    }
+
+    function performRightFar(element) {
+      moveMe(element, 2, 900, -135, 400, 300, 350, 300);
     }
 
     function performRightOffscreen(element) {
@@ -202,7 +218,12 @@
         width: width + "px",
         height: height + "px"
       },
-      1000,
+      {
+        step: function(now, fx) {
+          $(this).css('-webkit-transform','rotateX(' + xRotate + 'deg) rotateY(' + yRotate + 'deg)'); 
+        }
+      },
+      3000,
       function() {
         // Animation complete.
       });
@@ -210,9 +231,11 @@
 
     return {
       leftOffscreen: function(element) { performLeftOffscreen(element); },
+      leftFar: function(element) { performLeftFar(element); },
       left: function(element) { performLeft(element); },
       center: function(element) { performCenter(element); },
       right: function(element) { performRight(element); },
+      rightFar: function(element) { performRightFar(element); },
       rightOffscreen: function(element) { performRightOffscreen(element); }
     }
   }());
@@ -256,12 +279,10 @@
       drawNode(400, 300, nodes[i], document.getElementById(canvasId));
     }
 
-    animate.center($("#canvas-ra1-container"));
-    animate.right($("#canvas-ra2-container"));
-    showDetails("detail-ra1");
-
     $(".left").click(function() { moveLeft(); return false; });
     $(".right").click(function() { moveRight(); return false; });
+
+    move(1);
   });
 
   function moveLeft() {
@@ -270,14 +291,7 @@
       return;
     }
     currentNode -= 1;
-
-    animate.leftOffscreen($("#canvas-ra" + (currentNode - 2) + "-container"));
-    animate.left($("#canvas-ra" + (currentNode - 1) + "-container"));
-    animate.center($("#canvas-ra" + currentNode + "-container"));
-    animate.right($("#canvas-ra" + (currentNode + 1) + "-container"));
-    animate.rightOffscreen($("#canvas-ra" + (currentNode + 2) + "-container"));
-
-    showDetails("detail-ra" + currentNode);
+    move(currentNode);
   }
 
   function moveRight() {
@@ -286,13 +300,27 @@
       return;
     }
     currentNode += 1;
-    animate.leftOffscreen($("#canvas-ra" + (currentNode - 2) + "-container"));
+    move(currentNode);
+  }
+
+  function move(nodeIndex) {
+    if(nodeIndex < 1) { return; }
+    currentNode = nodeIndex;
+
+    for(var i = (currentNode - 3); i >= -nodeCount; i--) {
+      animate.leftOffscreen($("#canvas-ra" + i + "-container"));
+    }
+    animate.leftFar($("#canvas-ra" + (currentNode - 2) + "-container"));
     animate.left($("#canvas-ra" + (currentNode - 1) + "-container"));
     animate.center($("#canvas-ra" + currentNode + "-container"));
     animate.right($("#canvas-ra" + (currentNode + 1) + "-container"));
-    animate.rightOffscreen($("#canvas-ra" + (currentNode + 2) + "-container"));
+    animate.rightFar($("#canvas-ra" + (currentNode + 2) + "-container"));
+    for(var i = (currentNode + 3); i <= nodeCount; i++) {
+      animate.rightOffscreen($("#canvas-ra" + i + "-container"));
+    }
 
     showDetails("detail-ra" + currentNode);
+    $("#research_area_id").val("");
   }
 
   function showDetails(detailId) {
