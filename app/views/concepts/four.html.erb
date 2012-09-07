@@ -72,6 +72,8 @@
     display: inline-block;
     width: 30%;
     margin: 0 20px 20px 0;
+    color: #FFFFFF;
+    font-weight: bold;
     border: 1px solid #CCCCCC;
   }
 
@@ -81,6 +83,7 @@
     display: block;
     height: 200px;
     overflow-y: scroll;
+    background: #FFFFFF;
     border: 1px dashed #CCCCCC;
   }
   #research-details .container .row
@@ -88,11 +91,19 @@
     position: relative;
     display: block;
     padding: 10px;
+    color: #333333;
   }
   #research-details .container .row:nth-child(odd)
   {
     background: #DDDDDD;
   }
+
+  .color-1 { background: #66883f; }
+  .color-2 { background: #eedb74; }
+  .color-3 { background: #6c4b1a; }
+  .color-4 { background: #c57200; }
+  .color-5 { background: #6c3108; }
+  .color-6 { background: #b380ba; }
 </style>
 
 <div id="research-areas"></div>
@@ -117,7 +128,7 @@
   <div id="detail-ra<%= i + 1 %>">
     <h2><%= ra.name %></h2>
 
-    <div class="set">
+    <div class="set color-1">
       <h3>Publications</h3>
       <div class="container">
         <% ra.publications.group(:id).each do |model| %>
@@ -126,25 +137,7 @@
       </div>
     </div>
 
-    <div class="set">
-      <h3>Grants</h3>
-      <div class="container">
-        <% ra.grants.group(:id).each do |model| %>
-          <div class="row"><%= model.title %></div>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="set">
-      <h3>Patents</h3>
-      <div class="container">
-        <% ra.patents.group(:id).each do |model| %>
-          <div class="row"><%= model.title %></div>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="set">
+    <div class="set color-2">
       <h3>Researchers</h3>
       <div class="container">
         <% ra.researchers.group(:id).each do |model| %>
@@ -153,7 +146,7 @@
       </div>
     </div>
 
-    <div class="set">
+    <div class="set color-3">
       <h3>Venues</h3>
       <div class="container">
         <% ra.venues.group(:id).each do |model| %>
@@ -162,11 +155,29 @@
       </div>
     </div>
 
-    <div class="set">
+    <div class="set color-4">
       <h3>Departments</h3>
       <div class="container">
         <% ra.departments.group(:id).each do |model| %>
           <div class="row"><%= model.name %></div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="set color-5">
+      <h3>Grants</h3>
+      <div class="container">
+        <% ra.grants.group(:id).each do |model| %>
+          <div class="row"><%= model.title %></div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="set color-6">
+      <h3>Patents</h3>
+      <div class="container">
+        <% ra.patents.group(:id).each do |model| %>
+          <div class="row"><%= model.title %></div>
         <% end %>
       </div>
     </div>
@@ -243,12 +254,12 @@
   var maxChildCircleSize = 80;
   var minChildCircleSize = 8;
   var grey = "#7a8491";
-  var green = "#66883f";
-  var yellow = "#eedb74";
-  var brown = "#6c4b1a";
-  var orange = "#c57200";
-  var red = "#6c3108";
-  var purple = "#b380ba";
+  var green = "#66884f";    // color-1
+  var yellow = "#eedb74";   // color-2
+  var brown = "#6c4b1a";    // color-3
+  var orange = "#c57200";   // color-4
+  var red = "#6c3108";      // color-5
+  var purple = "#b380ba";   // color-6
 
   var nodes = [
     <% @nodes.each do |node| %>
