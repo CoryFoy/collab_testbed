@@ -3,7 +3,7 @@ class Patent < ActiveRecord::Base
 
   has_many :publications, :through => :research_areas
   has_many :grants, :through => :research_areas
-  has_many :researchers, :through => :publications
+  has_many :researchers
   has_many :venues, :through => :publications
   has_many :departments, :through => :researchers
 

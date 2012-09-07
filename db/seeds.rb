@@ -58,6 +58,34 @@ unless Department.all.count > 0
       p.save
     end
 
+    100.times do |i|
+      title = ""
+      9.times do
+        title += words[rand(word_count)] + " "
+      end
+      p = Patent.create(:title => title)
+      2.times do
+        p.researchers << researchers[rand(rcnt)]
+      end
+      3.times do
+        p.research_areas << areas[rand(acnt)]
+      end
+    end
+
+    300.times do |i|
+      title = ""
+      3.times do
+        title += words[rand(word_count)] + " "
+      end
+      g = Grant.create(:title => title, :amount => rand(1000000), :date_awarded => DateTime.now)
+      2.times do
+        g.researchers << researchers[rand(rcnt)]
+      end
+      3.times do
+        g.research_areas << areas[rand(acnt)]
+      end
+
+    end
 
 
   end
