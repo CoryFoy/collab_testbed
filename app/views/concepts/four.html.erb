@@ -219,13 +219,10 @@
         height: height + "px"
       },
       {
+        duration: 500,
         step: function(now, fx) {
-          $(this).css('-webkit-transform','rotateX(' + xRotate + 'deg) rotateY(' + yRotate + 'deg)'); 
+          $(this).css('-webkit-transform','rotateX(' + xRotate + 'deg) rotateY(' + yRotate + 'deg)');
         }
-      },
-      3000,
-      function() {
-        // Animation complete.
       });
     }
 
