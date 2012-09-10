@@ -201,6 +201,7 @@
   var maxChildCircleSize = 80;
   var minChildCircleSize = 8;
   var grey = "#7a8491";
+  var lightGrey = "#CCCCCC";
   var green = "#66884f";    // color-1
   var yellow = "#eedb74";   // color-2
   var brown = "#6c4b1a";    // color-3
@@ -326,6 +327,7 @@
   function drawChildCircle(node, x, y, color, canvas) {
     var shapeSize = node.relatedCount / node.maxCount * maxChildCircleSize
     if(shapeSize < minChildCircleSize) { shapeSize = minChildCircleSize; }
+    drawCircle(maxChildCircleSize, x, y, lightGrey, canvas);
     drawCircle(shapeSize, x, y, color, canvas);
     drawLabel(node.relatedCount, x, y + 10, canvas);
   }
