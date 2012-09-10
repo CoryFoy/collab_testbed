@@ -61,7 +61,55 @@ class ConceptsController < ApplicationController
     end
   end
 
+  def c4_research_area
+    ra_id = params[:id]
+    @research_area = ResearchArea.find_by_id(ra_id)
+    build_base_for_research_area(@research_area)
+
+    publication_id = params[:publication_id]
+    c4_get_selected_from_publication(publication_id, @research_area) unless publication_id.blank?
+
+    researcher_id = params[:researcher_id]
+    c4_get_selected_from_researcher(researcher_id, @research_area) unless researcher_id.blank?
+
+    department_id = params[:department_id]
+    c4_get_selected_from_department(department_id, @research_area) unless department_id.blank?
+
+    venue_id = params[:venue_id]
+    c4_get_selected_from_venue(venue_id, @research_area) unless venue_id.blank?
+
+    patent_id = params[:patent_id]
+    c4_get_selected_from_patent(patent_id, @research_area) unless patent_id.blank?
+
+    grant_id = params[:grant_id]
+    c4_get_selected_from_grant(grant_id, @research_area) unless grant_id.blank?
+
+    reject_from(@selected_publications, @research_area.publications)
+    reject_from(@publications, @research_area.publications)
+
+    reject_from(@selected_researchers, @research_area.researchers)
+    reject_from(@researchers, @research_area.researchers)
+
+    reject_from(@selected_departments, @research_area.departments)
+    reject_from(@departments, @research_area.departments)
+
+    reject_from(@selected_venues, @research_area.venues)
+    reject_from(@venues, @research_area.venues)
+
+    reject_from(@selected_grants, @research_area.grants)
+    reject_from(@grants, @research_area.grants)
+
+    reject_from(@selected_patents, @research_area.patents)
+    reject_from(@patents, @research_area.patents)
+
+    render :partial => "research_area", :locals => {}, :layout => false
+  end
+
   private
+
+  def reject_from(collection, master_collection)
+    collection.reject! { |master_item| master_collection.none? { |child_item| child_item.id == master_item.id } }
+  end
 
   def build_base_data_for_one
     @departments = []
@@ -140,7 +188,6 @@ class ConceptsController < ApplicationController
 
     @selected_departments = model.departments.group(:id)
     @departments = @departments - @selected_departments
-
   end
 
   def get_selected_from_publication(id)
@@ -295,6 +342,155 @@ class ConceptsController < ApplicationController
 
   def build_node_for(research_area)
     Node.create_from(research_area)
+  end
+
+  # Concept 4: detail inter-related updating
+  def build_base_for_research_area(research_area)
+    @publications = research_area.publications.group(:id)
+    @researchers = research_area.researchers.group(:id)
+    @grants = research_area.grants.group(:id)
+    @patents = research_area.patents.group(:id)
+    @departments = research_area.departments.group(:id)
+    @venues = research_area.venues.group(:id)
+
+    @selected_departments = []
+    @selected_researchers = []
+    @selected_venues = []
+    @selected_publications = []
+    @selected_grants = []
+    @selected_patents = []
+  end
+
+  def c4_get_selected_from_publication(id, ra)
+    model = ra.publications.find { |m| m.id == id.to_i }
+
+    @selected_publications = [ model ]
+    @publications = @publications - @selected_publications
+
+    @selected_researchers = model.researchers
+    @researchers = @researchers - @selected_researchers
+
+    @selected_venues = [ model.venue ]
+    @venues = @venues - @selected_venues
+
+    @selected_departments = model.departments.group(:id)
+    @departments = @departments - @selected_departments
+
+    @selected_patents = model.patents.group(:id)
+    @patents = @patents - @selected_patents
+
+    @selected_grants = model.grants.group(:id)
+    @grants = @grants - @selected_grants
+  end
+
+  def c4_get_selected_from_researcher(id, ra)
+    model = ra.researchers.find { |m| m.id == id.to_i }
+
+    @selected_researchers = [ model ]
+    @researchers = @researchers - @selected_researchers
+
+    @selected_departments = [ model.department ]
+    @departments = @departments - @selected_departments
+
+    @selected_publications = model.publications
+    @publications = @publications - @selected_publications
+
+    @selected_patents = model.patents.group(:id)
+    @patents = @patents - @selected_patents
+
+    @selected_grants = model.grants.group(:id)
+    @grants = @grants - @selected_grants
+
+    @selected_venues = model.venues.group(:id)
+    @venues = @venues - @selected_venues
+  end
+
+  def c4_get_selected_from_department(id, ra)
+    model = ra.departments.find { |m| m.id == id.to_i }
+
+    @selected_departments = [ model ]
+    @departments = @departments - @selected_departments
+
+    @selected_researchers = model.researchers
+    @researchers = @researchers - @selected_researchers
+
+    @selected_publications = model.publications.group(:id)
+    @publications = @publications - @selected_publications
+
+    @selected_patents = model.patents.group(:id)
+    @patents = @patents - @selected_patents
+
+    @selected_grants = model.grants.group(:id)
+    @grants = @grants - @selected_grants
+
+    @selected_venues = model.venues.group(:id)
+    @venues = @venues - @selected_venues
+  end
+
+  def c4_get_selected_from_venue(id, ra)
+    model = ra.venues.find { |m| m.id == id.to_i }
+
+    @selected_venues = [ model ]
+    @venues = @venues - @selected_venues
+
+    @selected_publications = model.publications
+    @publications = @publications - @selected_publications
+
+    @selected_patents = model.patents.group(:id)
+    @patents = @patents - @selected_patents
+
+    @selected_researchers = model.researchers.group(:id)
+    @researchers = @researchers - @selected_researchers
+
+    @selected_grants = model.grants.group(:id)
+    @grants = @grants - @selected_grants
+
+    @selected_departments = model.departments.group(:id)
+    @departments = @departments - @selected_departments
+  end
+
+  def c4_get_selected_from_grant(id, ra)
+    model = ra.grants.find { |m| m.id == id.to_i }
+
+    @selected_grants = [ model ]
+    @grants = @grants - @selected_grants
+
+    @selected_publications = model.publications.group(:id)
+    @publications = @publications - @selected_publications
+
+    @selected_patents = model.patents.group(:id)
+    @patents = @patents - @selected_patents
+
+    @selected_researchers = model.researchers.group(:id)
+    @researchers = @researchers - @selected_researchers
+
+    @selected_venues = model.venues.group(:id)
+    @venues = @venues - @selected_venues
+
+    @selected_departments = model.departments.group(:id)
+    @departments = @departments - @selected_departments
+  end
+
+  def c4_get_selected_from_patent(id, ra)
+    model = ra.patents.find { |m| m.id == id.to_i }
+
+    @selected_patents = [ model ]
+    @patents = @patents - @selected_patents
+
+    @selected_publications = model.publications.group(:id)
+    @publications = @publications - @selected_publications
+
+    @selected_grants = model.grants.group(:id)
+    @grants = @grants - @selected_grants
+
+    @selected_researchers = model.researchers.group(:id)
+    @researchers = @researchers - @selected_researchers
+
+    @selected_venues = model.venues.group(:id)
+    @venues = @venues - @selected_venues
+
+    @selected_departments = model.departments.group(:id)
+    @departments = @departments - @selected_departments
   end
 
 end

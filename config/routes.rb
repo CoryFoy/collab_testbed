@@ -15,7 +15,7 @@ Research::Application.routes.draw do
 
   # concepts
   match 'concepts' => "concepts#index"
-  match "concepts/:action", :controller => 'concepts', :action => /[a-z]+/i
+  match "concepts/:action", :controller => 'concepts', :action => /[a-zA-Z0-9_]+/i
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

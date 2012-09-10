@@ -61,12 +61,12 @@
     border: 1px solid #CCCCCC;
   }
 
-  #research-details H3
+  #research-details H3, .data-container H3
   {
     padding-left: 6px;
   }
 
-  #research-details .set
+  #research-details .set, .data-container
   {
     position: relative;
     display: inline-block;
@@ -77,7 +77,7 @@
     border: 1px solid #CCCCCC;
   }
 
-  #research-details .container
+  #research-details .container, .data-container .data-rows
   {
     position: relative;
     display: block;
@@ -86,14 +86,14 @@
     background: #FFFFFF;
     border: 1px dashed #CCCCCC;
   }
-  #research-details .container .row
+  #research-details .container .row, .data-container .data-rows .data-row
   {
     position: relative;
     display: block;
     padding: 10px;
     color: #333333;
   }
-  #research-details .container .row:nth-child(odd)
+  #research-details .container .row:nth-child(odd), .data-row:nth-child(odd)
   {
     background: #DDDDDD;
   }
@@ -106,10 +106,20 @@
   .color-6 { background: #b380ba; }
 </style>
 
+<%= form_tag "/concepts/c4_research_area", :id => "details_params", :method => "get" do |f| %>
+  <%= hidden_field_tag "id" %>
+  <%= hidden_field_tag "publication_id" %>
+  <%= hidden_field_tag "researcher_id" %>
+  <%= hidden_field_tag "department_id" %>
+  <%= hidden_field_tag "venue_id" %>
+  <%= hidden_field_tag "grant_id" %>
+  <%= hidden_field_tag "patent_id" %>
+<% end %>
+
 <div id="research-areas"></div>
 
-<%= form_tag "/concepts/three", :method => "get" do |f| %>
 <div style="text-align: center; margin: 1em;">
+<%= form_tag "/concepts/four", :method => "get" do |f| %>
   <a href="#" class="left">Back</a>
   &nbsp;
   <span class="search-ra">
@@ -117,74 +127,11 @@
   </span>
   &nbsp;
   <a href="#" class="right">Forward</a>
-</div>
 <% end %>
+</div>
 
 <div id="research-details">
-  <%
-    @nodes.each_with_index do |node, i|
-      ra = node.research_area
-  %>
-  <div id="detail-ra<%= i + 1 %>">
-    <h2><%= ra.name %></h2>
-
-    <div class="set color-1">
-      <h3>Publications</h3>
-      <div class="container">
-        <% ra.publications.group(:id).each do |model| %>
-          <div class="row"><%= model.name %></div>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="set color-2">
-      <h3>Researchers</h3>
-      <div class="container">
-        <% ra.researchers.group(:id).each do |model| %>
-          <div class="row"><%= model.name %></div>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="set color-3">
-      <h3>Venues</h3>
-      <div class="container">
-        <% ra.venues.group(:id).each do |model| %>
-          <div class="row"><%= model.name %></div>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="set color-4">
-      <h3>Departments</h3>
-      <div class="container">
-        <% ra.departments.group(:id).each do |model| %>
-          <div class="row"><%= model.name %></div>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="set color-5">
-      <h3>Grants</h3>
-      <div class="container">
-        <% ra.grants.group(:id).each do |model| %>
-          <div class="row"><%= model.title %></div>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="set color-6">
-      <h3>Patents</h3>
-      <div class="container">
-        <% ra.patents.group(:id).each do |model| %>
-          <div class="row"><%= model.title %></div>
-        <% end %>
-      </div>
-    </div>
-
-  </div>
-  <% end %>
-</div>
+<div>
 
 <script type="text/javascript">
   var animate = (function () {
@@ -264,6 +211,7 @@
   var nodes = [
     <% @nodes.each do |node| %>
     {
+      id: "<%= node.id %>",
       title: "<%= node.title %>",
       data: [
         { relatedCount: <%= node.publications_related_count %>  , maxCount: <%= node.publications_max_count %>  },
@@ -283,7 +231,7 @@
     for(var i = 0; i < nodes.length; i++) {
       var canvasId = "canvas-ra" + (i + 1)
       var detailId = "detail-ra" + (i + 1)
-      $("#research-areas").append($("<div id='" + canvasId + "-container' class='canvas-container' detailId='" + detailId + "'><canvas id='" + canvasId + "' width='800' height='600'></canvas></div>"));
+      $("#research-areas").append($("<div id='" + canvasId + "-container' class='canvas-container' detailId='" + detailId + "' raId='" + nodes[i].id + "'><canvas id='" + canvasId + "' width='800' height='600'></canvas></div>"));
       drawNode(400, 300, nodes[i], document.getElementById(canvasId));
     }
 
@@ -291,6 +239,9 @@
     $(".right").click(function() { moveRight(); return false; });
 
     move(1);
+
+    $(".testMe").click(function () {
+    });
   });
 
   function moveLeft() {
@@ -329,6 +280,21 @@
 
     showDetails("detail-ra" + currentNode);
     $("#research_area_id").val("");
+    var id = $(".current").attr("raid");
+    $("INPUT[name='id']").val(id);
+    loadDetailsData();
+  }
+
+  function loadDetailsData() {
+    var data = $("#details_params").serialize();
+    $.ajax({
+      url: "/concepts/c4_research_area",
+      type: "GET",
+      data: data,
+      success: function(result) {
+        $("#research-details").html(result);
+      },
+    });
   }
 
   function showDetails(detailId) {
