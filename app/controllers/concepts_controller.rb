@@ -106,10 +106,22 @@ class ConceptsController < ApplicationController
   end
 
   def five
+    init_research_area_to_publications_connections
     @nodes = []
+    @max_researchers = Researcher.all.length
+    @max_research_areas = ResearchArea.all.length
+    @max_publications = Publication.all.length
+    Researcher.all.each { |res| @nodes.push(C5Node.create_from(res, @ra_pubs)) }
   end
 
   private
+
+  def init_research_area_to_publications_connections
+    @ra_pubs = []
+    ResearchArea.all.each do |ra|
+      ra.publications.each { |pub| @ra_pubs.push({ :ra_id => ra.id, :pub_id => pub.id }) }
+    end
+  end
 
   def reject_from(collection, master_collection)
     collection.reject! { |master_item| master_collection.none? { |child_item| child_item.id == master_item.id } }
@@ -528,6 +540,28 @@ class C4Node
 
     node.patents_related_count = research_area.patents.group(:id).length
     node.patents_max_count = Patent.all.length
+
+    node
+  end
+end
+
+class C5Node
+  attr_accessor :researcher
+  attr_accessor :connected_ids
+
+  def self.create_from(researcher, ra_pubs)
+    node = C5Node.new
+    node.researcher = researcher
+    node.connected_ids = []
+
+    researcher.research_areas.each do |ra|
+      pub_ids = []
+      ra_pubs.each { |set| pub_ids.push(set[:pub_id]) if set[:ra_id] == ra.id }
+      node.connected_ids.push({
+        :research_area_id => ra.id,
+        :publication_ids => pub_ids
+      })
+    end
 
     node
   end

@@ -1,1 +1,150 @@
-<div>test</div>
+<style type="text/css">
+  #bar-container
+  {
+    position: relative;
+    display: block;
+    width: 1200px;
+    left: 50%;
+    margin-left: -600px;
+    padding-bottom: 50px;
+    text-align: center;
+    background: #EEEEEE;
+    border: 1px solid #CCCCCC;
+  }
+
+  #bar-container H2
+  {
+    padding: 3px 12px;
+    text-align: left;
+  }
+
+  CANVAS
+  {
+    background: #FFFFFF;
+    border: 1px solid #CCCCCC;
+  }
+</style>
+
+<div id="bar-container">
+  <h2>Bar Connections</h2>
+  <canvas id="playground" width="1100" height="6000"></canvas>
+</div>
+
+<script type="text/javascript">
+var nodes = [
+  <% @nodes.each do |node| %>
+  {
+    rid: <%= node.researcher.id %>,
+    rname: "<%= node.researcher.name %>",
+    ras: [
+      <% node.connected_ids.each do |set| %>
+      {
+        raid: <%= set[:research_area_id] %>,
+        pubids: [<% set[:publication_ids].each { |pub_id| %><%= pub_id %>,<% } %> ]
+      },
+      <% end %>
+    ]
+  },
+<% end %>
+];
+</script>
+
+<script type="text/javascript">
+  var grey = "#CCCCCC";
+  var barColor = "#333333";
+  var connectionColor = "#DDDDDD";
+  var selectedConnectionColor = "#CCCFFF";
+  var lineTop = 50;
+  var lineBottom = 5950;
+  var bar1 = 50;
+  var bar2 = 500;
+  var bar3 = 1050;
+
+  var maxRes = <%= @max_researchers %>;
+  var maxRas = <%= @max_research_areas %>;
+  var maxPubs = <%= @max_publications %>;
+
+  $(document).ready(function() {
+    var canvas = document.getElementById("playground");
+
+    drawLabel("Researchers", bar1, lineTop - 20, canvas);
+    drawLine(bar1, lineTop, bar1, lineBottom, barColor, 1, canvas);
+
+    drawLabel("Research Areas", bar2, lineTop - 20, canvas);
+    drawLine(bar2, lineTop, bar2, lineBottom, barColor, 1, canvas);
+
+    drawLabel("Publications", bar3, lineTop - 20, canvas);
+    drawLine(bar3, lineTop, bar3, lineBottom, barColor, 1, canvas);
+
+    for(var i = 0; i < nodes.length; i++) {
+      drawNode(nodes[i], maxRes, canvas);
+    }
+
+    drawDots(maxRes, bar1, canvas);
+    drawDots(maxRas, bar2, canvas);
+    drawDots(maxPubs, bar3, canvas);
+  });
+
+  function drawNode(node, maxCount, canvas) {
+    var reY = getYForNode(maxCount, node.rid - 1);
+    for(var i = 0; i < node.ras.length; i++) {
+      var raY = getYForNode(maxRas, node.ras[i].raid - 1);
+      drawLine(bar1, reY, bar2, raY, connectionColor, 1, canvas);
+
+      var pubids = node.ras[i].pubids;
+      for(var j = 0; j < pubids.length; j++) {
+        var pubY = getYForNode(maxPubs, pubids[j]);
+        drawLine(bar2, raY, bar3, pubY, connectionColor, 1, canvas);
+      }
+    }
+  }
+
+  function drawDots(maxCount, x, canvas) {
+    for(var i = 0; i < maxCount; i++) {
+      var y = getYForNode(maxCount, i);
+      drawCircle(2, x, y, "#666666", canvas);
+    }
+  }
+
+  function getYForNode(maxCount, index) {
+    var yInc = (lineBottom - lineTop) / maxCount;
+    var y = lineTop + (yInc * index) + (yInc / 2);
+    return y;
+  }
+
+  function drawLine(x1, y1, x2, y2, color, thickness, canvas)
+  {
+    var context = canvas.getContext("2d");
+    context.fillStyle = color;
+    context.strokeStyle = color;
+    context.beginPath();
+    context.moveTo(x1, y1);
+    context.lineTo(x2, y2);
+    context.lineWidth = thickness;
+    context.stroke();
+    context.closePath();
+  }
+
+  function drawCircle(size, x, y, color, canvas) {
+    var context = canvas.getContext("2d");
+    var centerX = x;
+    var centerY = y;
+    var radius = size;
+
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = color;
+    context.fill();
+    context.lineWidth = 1;
+    context.strokeStyle = "RGBA(0, 0, 0, 0.25)";
+    context.stroke();
+  }
+
+  function drawLabel(text, x, y, canvas) {
+    var context = canvas.getContext("2d");
+    context.textAlign = 'center';
+    context.font = "10pt Arial";
+    context.fillStyle = "#000000";
+    context.fillText(text, x, y);
+  }
+</script>
