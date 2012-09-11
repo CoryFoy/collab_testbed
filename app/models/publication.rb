@@ -8,5 +8,5 @@ class Publication < ActiveRecord::Base
   has_many :patents, :through => :research_areas
   has_many :grants, :through => :research_areas
 
-  attr_accessible :name, :venue_id
+  attr_accessible :name, :venue_id, :publication_date
 end

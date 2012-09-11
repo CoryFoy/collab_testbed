@@ -48,7 +48,12 @@ unless Department.all.count > 0
         title += words[rand(word_count)] + " "
       end
       venue = rand(1) == 0 ? Venue.first : Venue.last
-      p = Publication.create(:name => title, :venue_id => venue.id)
+      month = rand(11) + 1
+      year = rand(60) + 1950
+      day = rand(25) + 1
+      pub_date = Date.new(year, month, day)
+
+      p = Publication.create(:name => title, :venue_id => venue.id, :publication_date => pub_date)
       2.times do
         p.researchers << researchers[rand(rcnt)]
       end

@@ -46,8 +46,9 @@ ActiveRecord::Schema.define(:version => 20120805134632) do
   create_table "publications", :force => true do |t|
     t.string   "name"
     t.integer  "venue_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "publication_date"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
   create_table "publications_research_areas", :id => false, :force => true do |t|
