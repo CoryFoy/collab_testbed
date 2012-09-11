@@ -45,11 +45,11 @@ class ConceptsController < ApplicationController
     return if ra_id.blank?
 
     research_area = ResearchArea.find_by_id ra_id
-    @selected_node = build_node_for research_area
+    @selected_node = C4Node.create_from research_area
 
     related_ras = research_area.research_areas.group(:id)
     related_ras.each do |ra|
-      @related_nodes.push(build_node_for(ra)) unless ra.id == ra_id.to_i
+      @related_nodes.push(C4Node.create_from(ra)) unless ra.id == ra_id.to_i
     end
   end
 
@@ -57,7 +57,7 @@ class ConceptsController < ApplicationController
     @research_areas_options = ResearchArea.all
     @nodes = []
     ResearchArea.all.each do |ra|
-      @nodes.push(build_node_for(ra))
+      @nodes.push(C4Node.create_from(ra))
     end
   end
 
@@ -300,14 +300,14 @@ class ConceptsController < ApplicationController
     @selected_grants = Grant.find([ id ])
     @grants = @grants - @selected_grants
 
+    @selected_patents = model.patents.group(:id)
+    @patents = @patents - @selected_patents
+
     @selected_research_areas = model.research_areas
     @research_areas = @research_areas - @selected_research_areas
 
     @selected_publications = model.publications.group(:id)
     @publications = @publications - @selected_publications
-
-    @selected_patents = model.patents.group(:id)
-    @patents = @patents - @selected_patents
 
     @selected_researchers = model.researchers.group(:id)
     @researchers = @researchers - @selected_researchers
@@ -342,10 +342,6 @@ class ConceptsController < ApplicationController
 
     @selected_departments = model.departments.group(:id)
     @departments = @departments - @selected_departments
-  end
-
-  def build_node_for(research_area)
-    C4Node.create_from(research_area)
   end
 
   # Concept 4: detail inter-related updating
