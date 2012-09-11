@@ -105,6 +105,10 @@ class ConceptsController < ApplicationController
     render :partial => "research_area", :locals => {}, :layout => false
   end
 
+  def five
+    @nodes = []
+  end
+
   private
 
   def reject_from(collection, master_collection)
@@ -341,7 +345,7 @@ class ConceptsController < ApplicationController
   end
 
   def build_node_for(research_area)
-    Node.create_from(research_area)
+    C4Node.create_from(research_area)
   end
 
   # Concept 4: detail inter-related updating
@@ -495,7 +499,7 @@ class ConceptsController < ApplicationController
 
 end
 
-class Node
+class C4Node
   attr_accessor :research_area
   attr_accessor :id, :title
   attr_accessor :publications_related_count, :publications_max_count
@@ -506,7 +510,7 @@ class Node
   attr_accessor :patents_related_count, :patents_max_count
 
   def self.create_from(research_area)
-    node = Node.new
+    node = C4Node.new
     node.research_area = research_area
     node.id = research_area.id
     node.title = research_area.name
