@@ -3,13 +3,10 @@
   {
     position: relative;
     display: block;
-    width: 1200px;
+    width: 900px;
     left: 50%;
-    margin-left: -600px;
+    margin-left: -450px;
     padding-bottom: 50px;
-    text-align: center;
-    background: #EEEEEE;
-    border: 1px solid #CCCCCC;
   }
 
   #bar-container H2
@@ -20,14 +17,21 @@
 
   CANVAS
   {
-    background: #FFFFFF;
+    background: #EEEEEE;
     border: 1px solid #CCCCCC;
   }
 </style>
 
 <div id="bar-container">
   <h2>Bar Connections</h2>
-  <canvas id="playground" width="1100" height="6000"></canvas>
+  <div>
+    <select name="researcherId" id="researcherId">
+    <% @nodes.each do |node| %>
+      <option value="<%= node.researcher.id %>"><%= node.researcher.name %></option>
+    <% end %>
+    </select>
+  </div>
+  <canvas id="playground" width="800" height="600" style="width: 800px; height: 600px;"></canvas>
 </div>
 
 <script type="text/javascript">
@@ -55,17 +59,28 @@ var nodes = [
   var connectionColor = "#DDDDDD";
   var selectedConnectionColor = "#CCCFFF";
   var lineTop = 50;
-  var lineBottom = 5950;
+  var lineBottom = 550;
   var bar1 = 50;
-  var bar2 = 500;
-  var bar3 = 1050;
+  var bar2 = 400;
+  var bar3 = 750;
 
   var maxRes = <%= @max_researchers %>;
   var maxRas = <%= @max_research_areas %>;
   var maxPubs = <%= @max_publications %>;
 
   $(document).ready(function() {
+    drawCanvas(1);
+
+    $("#researcherId").change(function() {
+      var reId = $(this).val();
+      drawCanvas(reId);
+    });
+  });
+
+  function drawCanvas(researcherId) {
     var canvas = document.getElementById("playground");
+    var context = canvas.getContext("2d");
+    context.clearRect ( 0, 0, 800, 600 );
 
     drawLabel("Researchers", bar1, lineTop - 20, canvas);
     drawLine(bar1, lineTop, bar1, lineBottom, barColor, 1, canvas);
@@ -76,14 +91,15 @@ var nodes = [
     drawLabel("Publications", bar3, lineTop - 20, canvas);
     drawLine(bar3, lineTop, bar3, lineBottom, barColor, 1, canvas);
 
-    for(var i = 0; i < nodes.length; i++) {
-      drawNode(nodes[i], maxRes, canvas);
-    }
+//    for(var i = 0; i < nodes.length; i++) {
+//      drawNode(nodes[i], maxRes, canvas);
+//    }
+    drawNode(nodes[researcherId - 1], maxRes, canvas);
 
     drawDots(maxRes, bar1, canvas);
     drawDots(maxRas, bar2, canvas);
     drawDots(maxPubs, bar3, canvas);
-  });
+  }
 
   function drawNode(node, maxCount, canvas) {
     var reY = getYForNode(maxCount, node.rid - 1);
