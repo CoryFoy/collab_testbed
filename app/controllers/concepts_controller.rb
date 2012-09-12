@@ -549,6 +549,7 @@ class C5Node
     count = 0
     researcher.publications.each do |pub|
       count = count + 1
+      # NOTE: remove this if check to have it display all data.
       if(count > (rand(20) + 7))
         count = 0
         ra_ids = []
