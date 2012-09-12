@@ -40,11 +40,11 @@ var nodes = [
   {
     rid: <%= node.researcher.id %>,
     rname: "<%= node.researcher.name %>",
-    ras: [
+    pubs: [
       <% node.connected_ids.each do |set| %>
       {
-        raid: <%= set[:research_area_id] %>,
-        pubids: [<% set[:publication_ids].each { |pub_id| %><%= pub_id %>,<% } %> ]
+        pubid: <%= set[:pub_id] %>,
+        raids: [<% set[:ra_ids].each { |id| %><%= id %>,<% } %> ]
       },
       <% end %>
     ]
@@ -57,7 +57,7 @@ var nodes = [
   var grey = "#CCCCCC";
   var barColor = "#333333";
   var connectionColor = "#DDDDDD";
-  var selectedConnectionColor = "#CCCFFF";
+  var selectedConnectionColor = "#d18f8f";
   var lineTop = 50;
   var lineBottom = 550;
   var bar1 = 50;
@@ -85,32 +85,34 @@ var nodes = [
     drawLabel("Researchers", bar1, lineTop - 20, canvas);
     drawLine(bar1, lineTop, bar1, lineBottom, barColor, 1, canvas);
 
-    drawLabel("Research Areas", bar2, lineTop - 20, canvas);
+    drawLabel("Publications", bar2, lineTop - 20, canvas);
     drawLine(bar2, lineTop, bar2, lineBottom, barColor, 1, canvas);
 
-    drawLabel("Publications", bar3, lineTop - 20, canvas);
+    drawLabel("Research Areas", bar3, lineTop - 20, canvas);
     drawLine(bar3, lineTop, bar3, lineBottom, barColor, 1, canvas);
 
-//    for(var i = 0; i < nodes.length; i++) {
-//      drawNode(nodes[i], maxRes, canvas);
-//    }
-    drawNode(nodes[researcherId - 1], maxRes, canvas);
+    for(var i = 0; i < nodes.length; i++) {
+      if(researcherId - 1 != i) {
+        drawNode(nodes[i], maxRes, connectionColor, canvas);
+      }
+    }
+    drawNode(nodes[researcherId - 1], maxRes, selectedConnectionColor, canvas);
 
     drawDots(maxRes, bar1, canvas);
-    drawDots(maxRas, bar2, canvas);
-    drawDots(maxPubs, bar3, canvas);
+    drawDots(maxPubs, bar2, canvas);
+    drawDots(maxRas, bar3, canvas);
   }
 
-  function drawNode(node, maxCount, canvas) {
+  function drawNode(node, maxCount, color, canvas) {
     var reY = getYForNode(maxCount, node.rid - 1);
-    for(var i = 0; i < node.ras.length; i++) {
-      var raY = getYForNode(maxRas, node.ras[i].raid - 1);
-      drawLine(bar1, reY, bar2, raY, connectionColor, 1, canvas);
+    for(var i = 0; i < node.pubs.length; i++) {
+      var pubY = getYForNode(maxPubs, node.pubs[i].pubid - 1);
+      drawLine(bar1, reY, bar2, pubY, color, 1, canvas);
 
-      var pubids = node.ras[i].pubids;
-      for(var j = 0; j < pubids.length; j++) {
-        var pubY = getYForNode(maxPubs, pubids[j]);
-        drawLine(bar2, raY, bar3, pubY, connectionColor, 1, canvas);
+      var raids = node.pubs[i].raids;
+      for(var j = 0; j < raids.length; j++) {
+        var raY = getYForNode(maxRas, raids[j] - 1);
+        drawLine(bar2, pubY, bar3, raY, color, 1, canvas);
       }
     }
   }

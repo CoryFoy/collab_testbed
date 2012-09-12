@@ -106,22 +106,14 @@ class ConceptsController < ApplicationController
   end
 
   def five
-    init_research_area_to_publications_connections
     @nodes = []
     @max_researchers = Researcher.all.length
     @max_research_areas = ResearchArea.all.length
     @max_publications = Publication.all.length
-    Researcher.all.each { |res| @nodes.push(C5Node.create_from(res, @ra_pubs)) }
+    Researcher.all.each { |res| @nodes.push(C5Node.create_from(res)) }
   end
 
   private
-
-  def init_research_area_to_publications_connections
-    @ra_pubs = []
-    ResearchArea.all.each do |ra|
-      ra.publications.each { |pub| @ra_pubs.push({ :ra_id => ra.id, :pub_id => pub.id }) }
-    end
-  end
 
   def reject_from(collection, master_collection)
     collection.reject! { |master_item| master_collection.none? { |child_item| child_item.id == master_item.id } }
@@ -549,18 +541,23 @@ class C5Node
   attr_accessor :researcher
   attr_accessor :connected_ids
 
-  def self.create_from(researcher, ra_pubs)
+  def self.create_from(researcher)
     node = C5Node.new
     node.researcher = researcher
     node.connected_ids = []
 
-    researcher.research_areas.each do |ra|
-      pub_ids = []
-      ra_pubs.each { |set| pub_ids.push(set[:pub_id]) if set[:ra_id] == ra.id }
-      node.connected_ids.push({
-        :research_area_id => ra.id,
-        :publication_ids => pub_ids
-      })
+    count = 0
+    researcher.publications.each do |pub|
+      count = count + 1
+      if(count > (rand(20) + 7))
+        count = 0
+        ra_ids = []
+        pub.research_areas.each { |ra| ra_ids.push(ra.id) }
+        node.connected_ids.push({
+          :pub_id => pub.id,
+          :ra_ids => ra_ids
+        })
+      end
     end
 
     node
